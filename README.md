@@ -1,72 +1,42 @@
+### 📋 项目路线图 (Roadmap)
+
+本项目旨在基于 ROS 2 和 MoveIt 2 构建一套具备视觉感知能力的机械臂控制系统，并充分利用 GPU 加速以实现高性能规划。
+
+#### 🚀 第一阶段：基础控制 (Basic Control)
+**目标：** 完成机械臂的运动学配置，实现仿真环境中的运动规划。
+- [ ] **MoveIt 配置生成**：使用 `MoveIt Setup Assistant` 生成配置包 (`arm_robot_moveit_config`)。
+    - [ ] 生成碰撞矩阵 (Self-Collision Matrix)。
+    - [ ] 定义虚拟关节 (`virtual_joint` -> `world`)。
+    - [ ] 配置规划组 (`planning_group`: `arm`)。
+    - [ ] 配置控制器 (`FollowJointTrajectory`)。
+- [ ] **功能验证**：
+    - [ ] 编译并在 RViz 中运行 `demo.launch.py`。
+    - [ ] 测试拖拽交互标记进行简单的路径规划与执行。
+
+#### 👁️ 第二阶段：视觉感知集成 (Vision Integration)
+**目标：** 接入 Intel Realsense D435，实现环境感知与避障。
+- [ ] **硬件驱动**：集成 `realsense-ros`，确保在 ROS 2 中获取点云数据。
+- [ ] **手眼标定 (Hand-Eye Calibration)**：
+    - [ ] 使用 `moveit_calibration_gui` 进行标定 (Eye-in-Hand 或 Eye-to-Hand)。
+    - [ ] 获取并保存相机与机械臂基座的 TF 变换矩阵。
+- [ ] **环境避障**：
+    - [ ] 配置 MoveIt 的 `sensors_3d.yaml` (Octomap)。
+    - [ ] 验证机械臂在规划路径时自动避开相机视野内的障碍物。
+
+#### ⚡ 第三阶段：GPU 加速与进阶 (GPU Acceleration & Advanced)
+**目标：** 利用 RTX 3090 提升规划速度与仿真真实度。
+- [ ] **高性能仿真**：
+    - [ ] 从 Gazebo 迁移至 **NVIDIA Isaac Sim**。
+    - [ ] 在 Isaac Sim 中导入 URDF 并配置物理属性。
+- [ ] **感知加速**：
+    - [ ] 使用 **Isaac ROS** 替换 CPU 版的图像处理节点。
+    - [ ] (可选) 部署 **GraspNet** 等深度学习模型进行 6-DoF 抓取姿态推理。
+- [ ] **极速规划 (可选)**：
+    - [ ] 探索接入 **NVIDIA cuRobo (cuMotion)** 替代 OMPL，实现毫秒级动态规划。
 
 
-修改CmakeLists.txt 和 package.xml，换成ament_cmake
 
-package.xml
-```
--  <buildtool_depend>catkin</buildtool_depend>
--  <depend>roslaunch</depend>
--  <depend>robot_state_publisher</depend>
--  <depend>rviz</depend>
--  <depend>joint_state_publisher_gui</depend>
--  <depend>gazebo</depend>
-+  <buildtool_depend>ament_cmake</buildtool_depend>^M
-+  <exec_depend>robot_state_publisher</exec_depend>^M
-+  <exec_depend>rviz2</exec_depend>^M
-+  <exec_depend>joint_state_publisher_gui</exec_depend>^M
-+  <exec_depend>gazebo</exec_depend>^M
-   <export>
--    <architecture_independent />
-+   <build_type>ament_cmake</build_type>^M
-   </export>
- </package>
-```
+### 一些记录
 
-CMakeLists.txt
-```
-cmake_minimum_required(VERSION 3.5)
-project(arm_robot)
-find_package(ament_cmake REQUIRED)
-foreach(dir config launch meshes urdf rviz)
-  install(DIRECTORY ${dir}/
-    DESTINATION share/${PROJECT_NAME}/${dir})
-endforeach()
-ament_package()
-```
+solidworks导出urdf并在ros2中使用的[demo记录](doc/sw-urdf-ros2-demo.md)
 
-
-```bash
-conda deactivate # 确保不在conda环境下
-```
-
-安装依赖
-```bash
-sudo rosdep init
-rosdep update
-rosdep install --from-paths src --ignore-src -r -y
-```
-
-编译
-```bash
-colcon build --symlink-install --packages-select arm_robot
-```
-
-用ai根据display.launch生成新的launch文件display.launch.py
-
-
-运行
-```bash
-ros2 launch arm_robot display.launch.py
-```
-
-在rviz中选择base_link作为Fixed Frame
-添加RobotModel显示机器人模型，topic选择/robot_description
-添加TF显示坐标系
-保存rviz配置文件为arm_robot.rviz，放在rviz文件夹下
-
-
-修改CMakeLists.txt, `foreach(dir config launch meshes urdf rviz)` 添加rviz， 重新编译
-```bash
-rm -rf build/ install/ log/
-colcon build --symlink-install --packages-select arm_robot
-``` 
