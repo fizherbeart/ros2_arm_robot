@@ -4,14 +4,16 @@
 
 #### 🚀 第一阶段：基础控制 (Basic Control)
 **目标：** 完成机械臂的运动学配置，实现仿真环境中的运动规划。
-- [ ] **MoveIt 配置生成**：使用 `MoveIt Setup Assistant` 生成配置包 (`arm_robot_moveit_config`)。
-    - [ ] 生成碰撞矩阵 (Self-Collision Matrix)。
-    - [ ] 定义虚拟关节 (`virtual_joint` -> `world`)。
-    - [ ] 配置规划组 (`planning_group`: `arm`)。
-    - [ ] 配置控制器 (`FollowJointTrajectory`)。
-- [ ] **功能验证**：
-    - [ ] 编译并在 RViz 中运行 `demo.launch.py`。
-    - [ ] 测试拖拽交互标记进行简单的路径规划与执行。
+- [x] **MoveIt 配置生成**：使用 `MoveIt Setup Assistant` 生成配置包 (`arm_robot_moveit_config`)。
+    - [x] 生成碰撞矩阵 (Self-Collision Matrix)。
+    - [x] 定义虚拟关节 (`virtual_joint` -> `world`)。
+    - [x] 配置规划组 (`planning_group`: `arm`)。
+    - [x] 配置控制器 (`FollowJointTrajectory`)。
+- [x] **功能验证**：
+    - [x] 编译并在 RViz 中运行 `demo.launch.py`。
+    - [x] 测试拖拽交互标记进行简单的路径规划与执行。
+
+相关笔记：[MoveIt2 基础配置与使用记录](doc/moveit2.md)
 
 #### 👁️ 第二阶段：视觉感知集成 (Vision Integration)
 **目标：** 接入 Intel Realsense D435，实现环境感知与避障。
